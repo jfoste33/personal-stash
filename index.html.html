@@ -1,0 +1,1224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jonathan Foster - From Stories to AI</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --dark: #0a0a0a;
+            --darker: #050505;
+            --light: #f5f5f5;
+            --accent: #ff6b35;
+            --accent-dim: #c44d28;
+            --grey: #888;
+            --film-gold: #d4af37;
+        }
+
+        body {
+            font-family: 'Georgia', serif;
+            background: var(--darker);
+            color: var(--light);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Film grain effect */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="300" height="300"><filter id="noise"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(%23noise)" opacity="0.03"/></svg>');
+            pointer-events: none;
+            z-index: 9999;
+            opacity: 0.4;
+        }
+
+        .fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 1s ease, transform 1s ease;
+        }
+
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Hero Section */
+        .hero {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            position: relative;
+            background: linear-gradient(135deg, var(--darker) 0%, #1a0a0a 100%);
+        }
+
+        .hero::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 150px;
+            background: linear-gradient(transparent, var(--dark));
+        }
+
+        .hero h1 {
+            font-size: clamp(2.5rem, 8vw, 5rem);
+            font-weight: 300;
+            letter-spacing: 0.3rem;
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+            animation: fadeInDown 1.5s ease;
+        }
+
+        .hero .subtitle {
+            font-size: clamp(1rem, 3vw, 1.5rem);
+            color: var(--film-gold);
+            font-style: italic;
+            margin-bottom: 2rem;
+            animation: fadeInUp 1.5s ease 0.3s backwards;
+        }
+
+        .hero .tagline {
+            font-size: clamp(0.9rem, 2vw, 1.1rem);
+            max-width: 700px;
+            color: var(--grey);
+            line-height: 1.8;
+            animation: fadeInUp 1.5s ease 0.6s backwards;
+            padding: 0 2rem;
+        }
+
+        .scroll-indicator {
+            position: absolute;
+            bottom: 40px;
+            font-size: 0.9rem;
+            color: var(--grey);
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {
+                transform: translateY(0);
+            }
+            40% {
+                transform: translateY(-10px);
+            }
+            60% {
+                transform: translateY(-5px);
+            }
+        }
+
+        /* Screenplay Section */
+        .screenplay {
+            min-height: 100vh;
+            background: var(--dark);
+            padding: 100px 5%;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .screenplay::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background:
+                repeating-linear-gradient(
+                    0deg,
+                    transparent,
+                    transparent 2px,
+                    rgba(212, 175, 55, 0.03) 2px,
+                    rgba(212, 175, 55, 0.03) 4px
+                );
+            pointer-events: none;
+        }
+
+        .film-reel {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 30px;
+            background: linear-gradient(90deg,
+                transparent 0%,
+                transparent 10%,
+                rgba(212, 175, 55, 0.3) 10%,
+                rgba(212, 175, 55, 0.3) 15%,
+                transparent 15%,
+                transparent 85%,
+                rgba(212, 175, 55, 0.3) 85%,
+                rgba(212, 175, 55, 0.3) 90%,
+                transparent 90%
+            );
+            border-top: 2px solid rgba(212, 175, 55, 0.5);
+            border-bottom: 2px solid rgba(212, 175, 55, 0.5);
+        }
+
+        .film-reel::before,
+        .film-reel::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 15px;
+            height: 15px;
+            background: rgba(212, 175, 55, 0.4);
+            border-radius: 50%;
+        }
+
+        .film-reel::before {
+            left: 10px;
+            box-shadow: 30px 0 0 rgba(212, 175, 55, 0.4), 60px 0 0 rgba(212, 175, 55, 0.4);
+        }
+
+        .film-reel::after {
+            right: 10px;
+            box-shadow: -30px 0 0 rgba(212, 175, 55, 0.4), -60px 0 0 rgba(212, 175, 55, 0.4);
+        }
+
+        .screenplay-container {
+            max-width: 900px;
+            width: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 60px 40px;
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            border-radius: 4px;
+            position: relative;
+            backdrop-filter: blur(5px);
+        }
+
+        .scene-header {
+            font-family: 'Courier New', monospace;
+            font-size: 1rem;
+            font-weight: bold;
+            margin-bottom: 2rem;
+            color: var(--film-gold);
+            letter-spacing: 0.1rem;
+        }
+
+        .dialogue-line {
+            margin-bottom: 2rem;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        .dialogue-line.active {
+            animation: fadeInDialogue 0.5s forwards;
+        }
+
+        @keyframes fadeInDialogue {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .character {
+            font-family: 'Courier New', monospace;
+            text-align: center;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+            color: var(--accent);
+            font-size: 1.1rem;
+            letter-spacing: 0.2rem;
+        }
+
+        .action {
+            font-family: 'Courier New', monospace;
+            font-style: italic;
+            color: var(--grey);
+            margin: 1.5rem 0;
+            line-height: 1.8;
+        }
+
+        .dialogue {
+            font-family: 'Georgia', serif;
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.9;
+            font-size: 1.1rem;
+            color: var(--light);
+        }
+
+        .dialogue-text {
+            display: inline;
+        }
+
+        .cursor {
+            display: inline-block;
+            width: 2px;
+            height: 1.2em;
+            background: var(--film-gold);
+            margin-left: 2px;
+            animation: blink 1s infinite;
+            vertical-align: text-bottom;
+        }
+
+        @keyframes blink {
+            0%, 49% { opacity: 1; }
+            50%, 100% { opacity: 0; }
+        }
+
+        .continue-prompt {
+            text-align: center;
+            margin-top: 3rem;
+            color: var(--film-gold);
+            font-size: 0.9rem;
+            animation: pulse 2s infinite;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.6; }
+            50% { opacity: 1; }
+        }
+
+        .flicker {
+            animation: flicker 0.1s infinite;
+        }
+
+        @keyframes flicker {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.95; }
+        }
+
+        .screenplay-complete {
+            display: none;
+            text-align: center;
+            padding: 40px;
+        }
+
+        .screenplay-complete.show {
+            display: block;
+            animation: fadeInUp 1s ease;
+        }
+
+        .screenplay-complete h3 {
+            color: var(--film-gold);
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .screenplay-complete p {
+            color: var(--grey);
+            font-size: 1.1rem;
+            margin-bottom: 2rem;
+        }
+
+        .fade-to-next {
+            color: var(--accent);
+            font-size: 0.9rem;
+            animation: bounce 2s infinite;
+        }
+
+        /* Section Styling */
+        section {
+            padding: 100px 5%;
+            max-width: 1200px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .section-title {
+            font-size: clamp(2rem, 5vw, 3rem);
+            font-weight: 300;
+            margin-bottom: 3rem;
+            text-align: center;
+            letter-spacing: 0.2rem;
+            text-transform: uppercase;
+            position: relative;
+            display: inline-block;
+            width: 100%;
+        }
+
+        .section-title::after {
+            content: '';
+            display: block;
+            width: 100px;
+            height: 2px;
+            background: var(--film-gold);
+            margin: 1rem auto 0;
+        }
+
+        /* About Section */
+        .about {
+            background: var(--dark);
+        }
+
+        .about-content {
+            font-size: 1.2rem;
+            line-height: 2;
+            text-align: center;
+            max-width: 900px;
+            margin: 0 auto;
+            color: var(--light);
+        }
+
+        .about-content strong {
+            color: var(--film-gold);
+            font-weight: normal;
+        }
+
+        /* Timeline */
+        .timeline {
+            position: relative;
+            padding: 50px 0;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 50%;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: linear-gradient(to bottom, var(--film-gold), var(--accent));
+            transform: translateX(-50%);
+        }
+
+        .timeline-item {
+            position: relative;
+            margin-bottom: 100px;
+            width: 45%;
+        }
+
+        .timeline-item:nth-child(odd) {
+            margin-left: 0;
+            text-align: right;
+        }
+
+        .timeline-item:nth-child(even) {
+            margin-left: 55%;
+            text-align: left;
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: var(--film-gold);
+            border: 4px solid var(--dark);
+            border-radius: 50%;
+            top: 0;
+        }
+
+        .timeline-item:nth-child(odd)::before {
+            right: -60px;
+        }
+
+        .timeline-item:nth-child(even)::before {
+            left: -60px;
+        }
+
+        .timeline-content {
+            background: rgba(255, 255, 255, 0.03);
+            padding: 30px;
+            border-radius: 8px;
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .timeline-content:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: var(--film-gold);
+            transform: scale(1.02);
+        }
+
+        .timeline-date {
+            font-size: 0.9rem;
+            color: var(--film-gold);
+            margin-bottom: 0.5rem;
+            font-weight: bold;
+        }
+
+        .timeline-title {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+            color: var(--light);
+        }
+
+        .timeline-company {
+            font-size: 1.1rem;
+            color: var(--accent);
+            margin-bottom: 1rem;
+        }
+
+        .timeline-description {
+            color: var(--grey);
+            line-height: 1.8;
+        }
+
+        /* Featured Work */
+        .featured {
+            background: linear-gradient(135deg, var(--darker) 0%, #0a0515 100%);
+        }
+
+        .featured-work {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 40px;
+            margin-top: 50px;
+        }
+
+        .work-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            padding: 40px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .work-card:hover {
+            transform: translateY(-10px);
+            border-color: var(--film-gold);
+            box-shadow: 0 10px 40px rgba(212, 175, 55, 0.2);
+        }
+
+        .work-card h3 {
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+            color: var(--film-gold);
+        }
+
+        .work-card .work-type {
+            font-size: 0.9rem;
+            color: var(--accent);
+            margin-bottom: 1.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1rem;
+        }
+
+        .work-card p {
+            color: var(--grey);
+            line-height: 1.8;
+            margin-bottom: 1.5rem;
+        }
+
+        .work-card .awards {
+            font-style: italic;
+            color: var(--film-gold);
+            font-size: 0.95rem;
+        }
+
+        /* Skills Section */
+        .skills {
+            background: var(--dark);
+        }
+
+        .skills-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            margin-top: 50px;
+        }
+
+        .skill-category {
+            background: rgba(255, 255, 255, 0.02);
+            padding: 30px;
+            border-radius: 8px;
+            border-left: 3px solid var(--film-gold);
+        }
+
+        .skill-category h3 {
+            color: var(--film-gold);
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+        }
+
+        .skill-category ul {
+            list-style: none;
+        }
+
+        .skill-category li {
+            color: var(--grey);
+            padding: 0.5rem 0;
+            position: relative;
+            padding-left: 20px;
+        }
+
+        .skill-category li::before {
+            content: '▸';
+            position: absolute;
+            left: 0;
+            color: var(--accent);
+        }
+
+        /* Education */
+        .education {
+            background: var(--darker);
+        }
+
+        .education-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 40px;
+            margin-top: 50px;
+        }
+
+        .education-card {
+            background: rgba(255, 255, 255, 0.03);
+            padding: 40px;
+            border-radius: 8px;
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .education-card:hover {
+            border-color: var(--film-gold);
+            transform: translateY(-5px);
+        }
+
+        .education-card h3 {
+            color: var(--film-gold);
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .education-card .degree {
+            color: var(--light);
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
+        }
+
+        .education-card .note {
+            color: var(--grey);
+            font-style: italic;
+            font-size: 0.95rem;
+        }
+
+        /* Contact */
+        .contact {
+            background: linear-gradient(135deg, var(--dark) 0%, var(--darker) 100%);
+            text-align: center;
+        }
+
+        .contact-content {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .contact-content p {
+            font-size: 1.2rem;
+            color: var(--grey);
+            margin-bottom: 2rem;
+        }
+
+        .contact-info {
+            font-size: 1.1rem;
+            color: var(--film-gold);
+        }
+
+        /* Footer */
+        footer {
+            background: var(--darker);
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--grey);
+            font-size: 0.9rem;
+            border-top: 1px solid rgba(212, 175, 55, 0.2);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .timeline::before {
+                left: 30px;
+            }
+
+            .timeline-item,
+            .timeline-item:nth-child(odd),
+            .timeline-item:nth-child(even) {
+                width: 100%;
+                margin-left: 60px;
+                text-align: left;
+            }
+
+            .timeline-item::before,
+            .timeline-item:nth-child(odd)::before,
+            .timeline-item:nth-child(even)::before {
+                left: -40px;
+            }
+
+            section {
+                padding: 60px 5%;
+            }
+
+            .screenplay-container {
+                padding: 40px 20px;
+            }
+        }
+
+        /* Smooth Scroll */
+        html {
+            scroll-behavior: smooth;
+        }
+    </style>
+</head>
+<body>
+    <!-- Hero Section -->
+    <section class="hero">
+        <h1>Jonathan Foster</h1>
+        <div class="subtitle">From Stories to AI</div>
+        <p class="tagline">
+            A journey from film and television to designing the personality of AI—where creativity meets technology,
+            and the question "what does it mean to be human?" shapes everything.
+        </p>
+        <div class="scroll-indicator">↓ Scroll to explore ↓</div>
+    </section>
+
+    <!-- Interactive Screenplay Section -->
+    <section class="screenplay" id="screenplay">
+        <div class="film-reel"></div>
+        <div class="screenplay-container">
+            <div class="scene-header">INT. SPACE BETWEEN TIME - CONTINUOUS</div>
+
+            <div id="dialogue-container">
+                <!-- Dialogue will be dynamically inserted here -->
+            </div>
+
+            <div class="screenplay-complete" id="screenplay-complete">
+                <h3>FADE OUT.</h3>
+                <p>The story continues below...</p>
+                <div class="fade-to-next">↓</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section class="about">
+        <h2 class="section-title fade-in">The Story</h2>
+        <div class="about-content fade-in">
+            <p>
+                My years of writing in <strong>film and television, theater, and fiction</strong> shaped my creative approach
+                to Content Design at Microsoft. From ensuring language is people-focused and inclusive, to designing personality
+                and dialogue for <strong>Cortana and Microsoft's bot framework</strong>, I'm living a career path I could never
+                have anticipated.
+            </p>
+            <p style="margin-top: 2rem;">
+                Now, I find myself in the middle of an essential conversation—<strong>responsible approaches to designing
+                for LLM-powered experiences</strong>—and I am honored to be a part of it. I'm passionate about bringing
+                like-minded talent from the Arts and Humanities to technology. We need more people paying attention to
+                the question of what it means to be human.
+            </p>
+        </div>
+    </section>
+
+    <!-- Experience Timeline -->
+    <section class="experience">
+        <h2 class="section-title fade-in">The Journey</h2>
+        <div class="timeline">
+            <div class="timeline-item fade-in">
+                <div class="timeline-content">
+                    <div class="timeline-date">Nov 2018 - Present (7+ years)</div>
+                    <div class="timeline-title">Principal Content Design Director</div>
+                    <div class="timeline-company">Microsoft</div>
+                    <div class="timeline-description">
+                        Leading Copilot for M365, Security & Privacy, Commercial, and Prompt Engineering.
+                        Driving AI-powered initiatives requiring deep understanding of language nuance.
+                        Leading teams in applying UX writing skills across the entire customer journey.
+                        Most importantly, ensuring everything we design is inclusive, helpful, and good for people.
+                    </div>
+                </div>
+            </div>
+
+            <div class="timeline-item fade-in">
+                <div class="timeline-content">
+                    <div class="timeline-date">Feb 2014 - Nov 2018 (4+ years)</div>
+                    <div class="timeline-title">Principal Content Experience Manager, Cortana</div>
+                    <div class="timeline-company">Microsoft</div>
+                    <div class="timeline-description">
+                        Wrote what Cortana said for the US and 13 international markets. Responsible for designing
+                        Cortana's personality, ensuring integrity across all contexts and experiences. Helped create
+                        and train an ML-based conversational UX to support the Cortana personality. Made sure people
+                        across the globe could find an answer: "who is Cortana?"
+                    </div>
+                </div>
+            </div>
+
+            <div class="timeline-item fade-in">
+                <div class="timeline-content">
+                    <div class="timeline-date">Dec 2009 - Apr 2012 (2+ years)</div>
+                    <div class="timeline-title">Writer</div>
+                    <div class="timeline-company">"Not That Funny" (Feature Film)</div>
+                    <div class="timeline-description">
+                        Co-wrote the feature comedy with director Lauralee Farrer. Stars Tony Hale ("Arrested Development")
+                        and John Kapelos ("Breakfast Club"). Premiered at Ashland Independent Film Festival and earned
+                        3 Audience Awards. A simple story about how far a man will go for love.
+                    </div>
+                </div>
+            </div>
+
+            <div class="timeline-item fade-in">
+                <div class="timeline-content">
+                    <div class="timeline-date">Mar 2006 - Oct 2008 (2+ years)</div>
+                    <div class="timeline-title">Ecommerce Manager</div>
+                    <div class="timeline-company">Francis Ford Coppola Presents</div>
+                    <div class="timeline-description">
+                        Managed two online stores, created content for marketing campaigns (emails, keyword advertising,
+                        social media). Managed fulfillment, customer service, logistics, and compliance systems.
+                        Supervised inventories and maintained budgets with yearly projections.
+                    </div>
+                </div>
+            </div>
+
+            <div class="timeline-item fade-in">
+                <div class="timeline-content">
+                    <div class="timeline-date">Jan 2004 - Jun 2006 (2+ years)</div>
+                    <div class="timeline-title">Teacher</div>
+                    <div class="timeline-company">Bellevue Community College</div>
+                    <div class="timeline-description">
+                        Taught media theory, digital game development, HTML, film and video production, and writing.
+                        Taught through Distance Education program. Integral to BCC Faculty Institute for Online
+                        Discussions. Honored to be on Keynote Team for League for Innovation in Community Colleges,
+                        2005 Conference on Information Technology.
+                    </div>
+                </div>
+            </div>
+
+            <div class="timeline-item fade-in">
+                <div class="timeline-content">
+                    <div class="timeline-date">Jan 1998 - Jun 2007 (9+ years)</div>
+                    <div class="timeline-title">Creative Director</div>
+                    <div class="timeline-company">DareToPlay</div>
+                    <div class="timeline-description">
+                        Interactive, online storytelling concept for entertainment and alternative marketing solutions.
+                        Co-developed this original interactive marketing concept, creating and producing original content
+                        for marketing, entertainment, and educational models. Official Selection at 2003 Sundance Online
+                        Film Festival.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Featured Work -->
+    <section class="featured">
+        <h2 class="section-title fade-in">Featured Work</h2>
+        <div class="featured-work">
+            <div class="work-card fade-in">
+                <h3>Cortana's Personality</h3>
+                <div class="work-type">Conversational AI Design</div>
+                <p>
+                    Designed and wrote the personality for Microsoft's AI assistant across 14 markets worldwide.
+                    Created a coherent, engaging voice that millions of people interacted with daily.
+                </p>
+            </div>
+
+            <div class="work-card fade-in">
+                <h3>"Not That Funny"</h3>
+                <div class="work-type">Feature Film</div>
+                <p>
+                    Co-wrote a feature comedy starring Tony Hale. Premiered at film festivals and earned 3 Audience Awards.
+                </p>
+                <div class="awards">🏆 3 Audience Awards at Film Festivals</div>
+            </div>
+
+            <div class="work-card fade-in">
+                <h3>DareToPlay</h3>
+                <div class="work-type">Interactive Storytelling</div>
+                <p>
+                    Co-developed an original interactive marketing concept for web-based entertainment.
+                </p>
+                <div class="awards">🎬 Official Selection - Sundance Online Film Festival 2003</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Skills Section -->
+    <section class="skills">
+        <h2 class="section-title fade-in">Expertise</h2>
+        <div class="skills-grid">
+            <div class="skill-category fade-in">
+                <h3>Leadership & Culture</h3>
+                <ul>
+                    <li>Team Leadership & Mentoring</li>
+                    <li>Diverse, Equitable, Inclusive Culture</li>
+                    <li>Cross-functional Collaboration</li>
+                    <li>Strategic Vision</li>
+                </ul>
+            </div>
+
+            <div class="skill-category fade-in">
+                <h3>AI & Ethics</h3>
+                <ul>
+                    <li>Ethics in AI Design</li>
+                    <li>Responsible AI Development</li>
+                    <li>LLM-Powered Experiences</li>
+                    <li>Prompt Engineering</li>
+                </ul>
+            </div>
+
+            <div class="skill-category fade-in">
+                <h3>Content & UX</h3>
+                <ul>
+                    <li>Conversational UX Writing</li>
+                    <li>Personality Design for AI/Bots</li>
+                    <li>Content Strategy & Management</li>
+                    <li>UX Writing</li>
+                </ul>
+            </div>
+
+            <div class="skill-category fade-in">
+                <h3>Creative Background</h3>
+                <ul>
+                    <li>Film & Television Writing</li>
+                    <li>Theater & Fiction Writing</li>
+                    <li>Interactive Media Design</li>
+                    <li>Video Production</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- Education -->
+    <section class="education">
+        <h2 class="section-title fade-in">Education</h2>
+        <div class="education-grid">
+            <div class="education-card fade-in">
+                <h3>University of Southern California</h3>
+                <div class="degree">MFA, Professional Writing</div>
+                <div class="note">Focus on film writing and playwriting</div>
+            </div>
+
+            <div class="education-card fade-in">
+                <h3>UCLA</h3>
+                <div class="degree">BA, History</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact -->
+    <section class="contact">
+        <h2 class="section-title fade-in">Let's Connect</h2>
+        <div class="contact-content fade-in">
+            <p>
+                Interested in bringing Arts and Humanities talent to technology?
+                Want to discuss responsible AI design? Let's talk.
+            </p>
+            <div class="contact-info">
+                📍 Greater Seattle Area<br>
+                💼 Microsoft | Principal Content Design Director<br>
+                🎬 Writer | Educator | AI Ethics Advocate
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2026 Jonathan Foster. A story still being written.</p>
+    </footer>
+
+    <!-- JavaScript -->
+    <script>
+        // Screenplay dialogue data
+        const dialogueData = [
+            {
+                type: 'action',
+                text: 'Two figures materialize in the space between moments. JONATHAN (PAST) wears the weary optimism of a screenwriter fresh from finishing a film. JONATHAN (PRESENT) carries the quiet gravity of someone who\'s seen the future arrive.'
+            },
+            {
+                type: 'dialogue',
+                character: 'JONATHAN (PAST)',
+                text: 'So... you\'re really me? From the future?'
+            },
+            {
+                type: 'dialogue',
+                character: 'JONATHAN (PRESENT)',
+                text: 'I am. Though "future" is relative when you\'re standing outside of time.'
+            },
+            {
+                type: 'action',
+                text: 'Jonathan (Past) studies his future self with the analytical eye of a writer examining a character.'
+            },
+            {
+                type: 'dialogue',
+                character: 'JONATHAN (PAST)',
+                text: 'You look... different. Not just older. Like you\'ve been somewhere I can\'t even imagine.'
+            },
+            {
+                type: 'dialogue',
+                character: 'JONATHAN (PRESENT)',
+                text: 'That\'s because I have. I\'ve been designing personalities for artificial intelligence. Teaching machines to speak like people. Wrestling with the ethics of what it means to create something that learns.'
+            },
+            {
+                type: 'dialogue',
+                character: 'JONATHAN (PAST)',
+                text: '(laughing) AI? Like... science fiction AI? Come on. I just finished writing a romantic comedy. My world is actors and scripts and hoping Tony Hale\'s performance lands at festivals.'
+            },
+            {
+                type: 'dialogue',
+                character: 'JONATHAN (PRESENT)',
+                text: 'It did land. Three audience awards. You should be proud.'
+            },
+            {
+                type: 'action',
+                text: 'A flicker of film grain washes over them. Jonathan (Past) grows more serious.'
+            },
+            {
+                type: 'dialogue',
+                character: 'JONATHAN (PAST)',
+                text: 'Wait—you\'re serious about the AI thing? How does a screenwriter end up... there?'
+            },
+            {
+                type: 'dialogue',
+                character: 'JONATHAN (PRESENT)',
+                text: 'By accident. By design. By following the thread of what storytelling really is—creating voices, personalities, ways of being in the world. I wrote dialogue for a Microsoft assistant named Cortana. Millions of people spoke to her every day. I made sure she knew who she was.'
+            },
+            {
+                type: 'dialogue',
+                character: 'JONATHAN (PAST)',
+                text: '(amazed) You wrote for a machine? That actually... that sounds incredible. And terrifying.'
+            },
+            {
+                type: 'dialogue',
+                character: 'JONATHAN (PRESENT)',
+                text: 'It was both. Still is. Now I work on Copilot, on prompt engineering, on making sure we build these tools responsibly. The questions that matter haven\'t changed—they\'ve just gotten more urgent. What does it mean to be human? How do we stay human in a world where machines can speak?'
+            },
+            {
+                type: 'action',
+                text: 'Silence settles between them. Jonathan (Past) looks at his hands, then back up.'
+            },
+            {
+                type: 'dialogue',
+                character: 'JONATHAN (PAST)',
+                text: 'I have to ask... if you could go back in time—if you could give me advice right now, standing where I am—what would you say?'
+            },
+            {
+                type: 'action',
+                text: 'Jonathan (Present) takes a breath. This moment matters.'
+            },
+            {
+                type: 'dialogue',
+                character: 'JONATHAN (PRESENT)',
+                text: 'I\'d tell you this: Trust that your creative background is not a detour. Every story you write, every character you create, every moment you spend asking "why do people talk this way?"—it\'s all training for something you can\'t see yet. The arts and humanities aren\'t separate from technology. They\'re the soul of it.'
+            },
+            {
+                type: 'dialogue',
+                character: 'JONATHAN (PRESENT)',
+                text: '(continuing) And I\'d tell you: never stop asking what it means to be human. That question will become your compass. In a world building machines that think, we need people who spent their lives studying how humans feel, speak, dream, and connect. Your screenwriting? That\'s not behind you. It\'s the foundation of everything ahead.'
+            },
+            {
+                type: 'dialogue',
+                character: 'JONATHAN (PAST)',
+                text: '(quietly) So the stories still matter.'
+            },
+            {
+                type: 'dialogue',
+                character: 'JONATHAN (PRESENT)',
+                text: 'The stories always matter. They just take new forms. And you\'ll help shape them.'
+            },
+            {
+                type: 'action',
+                text: 'The film grain intensifies. The two Jonathans look at each other across time—past meeting present, creative meeting technical, story meeting machine. They are the same person, on the same journey, asking the same essential question.'
+            },
+            {
+                type: 'action',
+                text: 'What does it mean to be human?'
+            }
+        ];
+
+        let currentLine = 0;
+        let isTyping = false;
+        const dialogueContainer = document.getElementById('dialogue-container');
+        const screenplayComplete = document.getElementById('screenplay-complete');
+        const typingSpeed = 15; // ms per character
+
+        function createDialogueLine(data) {
+            const lineDiv = document.createElement('div');
+            lineDiv.className = 'dialogue-line';
+
+            if (data.type === 'action') {
+                const actionDiv = document.createElement('div');
+                actionDiv.className = 'action';
+                lineDiv.appendChild(actionDiv);
+                return { element: lineDiv, textElement: actionDiv, text: data.text };
+            } else {
+                const charDiv = document.createElement('div');
+                charDiv.className = 'character';
+                charDiv.textContent = data.character;
+
+                const dialogueDiv = document.createElement('div');
+                dialogueDiv.className = 'dialogue';
+
+                const textSpan = document.createElement('span');
+                textSpan.className = 'dialogue-text';
+
+                dialogueDiv.appendChild(textSpan);
+                lineDiv.appendChild(charDiv);
+                lineDiv.appendChild(dialogueDiv);
+
+                return { element: lineDiv, textElement: textSpan, text: data.text };
+            }
+        }
+
+        function typeText(element, text, callback) {
+            let index = 0;
+            isTyping = true;
+
+            const cursor = document.createElement('span');
+            cursor.className = 'cursor';
+            element.appendChild(cursor);
+
+            // Add flicker effect randomly during typing
+            const flickerInterval = setInterval(() => {
+                if (Math.random() > 0.7) {
+                    element.parentElement.classList.add('flicker');
+                    setTimeout(() => {
+                        element.parentElement.classList.remove('flicker');
+                    }, 100);
+                }
+            }, 2000);
+
+            function type() {
+                if (index < text.length) {
+                    const char = text.charAt(index);
+                    element.insertBefore(document.createTextNode(char), cursor);
+                    index++;
+                    setTimeout(type, typingSpeed);
+                } else {
+                    cursor.remove();
+                    isTyping = false;
+                    clearInterval(flickerInterval);
+                    if (callback) callback();
+                }
+            }
+
+            type();
+        }
+
+        function showNextLine() {
+            if (isTyping) return;
+
+            if (currentLine >= dialogueData.length) {
+                // Screenplay complete
+                const continuePrompt = document.querySelector('.continue-prompt');
+                if (continuePrompt) continuePrompt.remove();
+                screenplayComplete.classList.add('show');
+                return;
+            }
+
+            const data = dialogueData[currentLine];
+            const { element, textElement, text } = createDialogueLine(data);
+
+            // Remove old continue prompt
+            const oldPrompt = document.querySelector('.continue-prompt');
+            if (oldPrompt) oldPrompt.remove();
+
+            dialogueContainer.appendChild(element);
+
+            // Animate in
+            setTimeout(() => {
+                element.classList.add('active');
+
+                // Start typing after fade-in
+                setTimeout(() => {
+                    typeText(textElement, text, () => {
+                        // Add continue prompt after typing is done
+                        currentLine++;
+                        if (currentLine < dialogueData.length) {
+                            const prompt = document.createElement('div');
+                            prompt.className = 'continue-prompt';
+                            prompt.textContent = '[ Click to continue ]';
+                            dialogueContainer.appendChild(prompt);
+                        } else {
+                            // Last line - show completion
+                            showNextLine();
+                        }
+                    });
+                }, 500);
+            }, 100);
+        }
+
+        // Click anywhere to advance
+        document.addEventListener('click', (e) => {
+            if (e.target.closest('.screenplay-container') && !isTyping) {
+                showNextLine();
+            }
+        });
+
+        // Start screenplay when it comes into view
+        const screenplayObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting && currentLine === 0) {
+                    setTimeout(() => showNextLine(), 500);
+                }
+            });
+        }, { threshold: 0.5 });
+
+        screenplayObserver.observe(document.getElementById('screenplay'));
+
+        // Fade in elements on scroll
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, observerOptions);
+
+        // Observe all fade-in elements
+        document.querySelectorAll('.fade-in').forEach(el => {
+            observer.observe(el);
+        });
+
+        // Parallax effect for hero
+        window.addEventListener('scroll', () => {
+            const scrolled = window.pageYOffset;
+            const hero = document.querySelector('.hero');
+            if (hero) {
+                hero.style.transform = `translateY(${scrolled * 0.5}px)`;
+                hero.style.opacity = 1 - (scrolled / 600);
+            }
+        });
+    </script>
+</body>
+</html>
